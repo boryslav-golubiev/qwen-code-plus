@@ -3,43 +3,67 @@
  * and remove macOS quarantine attributes.
  */
 
-import { chmodSync, statSync, readdirSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { chmodSync, statSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 import { platform } from 'node:os';
 
-const vendorDir = join(process.cwd(), 'vendor', 'ripgrep');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const pkgRoot = __dirname;
+
+const logPath = join(pkgRoot, '.postinstall.log');
+function log(msg) {
+  try { writeFileSync(logPath, msg + '\n', { flag: 'a' }); } catch {}
+  console.log('postinstall:', msg);
+}
+
+log('Starting postinstall...');
+log('Package root: ' + pkgRoot);
+log('Platform: ' + platform());
+log('CWD: ' + process.cwd());
+
+const vendorDir = join(pkgRoot, 'vendor', 'ripgrep');
 if (!existsSync(vendorDir)) {
-  console.log('postinstall: vendor/ripgrep not found, skipping');
+  log('ERROR: vendor/ripgrep not found at ' + vendorDir);
   process.exit(0);
 }
 
 try {
-  // Fix permissions on all ripgrep binaries
-  const platforms = readdirSync(vendorDir);
-  for (const plat of platforms) {
-    const rgPath = join(vendorDir, plat, plat.includes('win') ? 'rg.exe' : 'rg');
-    if (existsSync(rgPath)) {
-      chmodSync(rgPath, 0o755);
-      console.log(`postinstall: fixed permissions on ${plat}/${plat.includes('win') ? 'rg.exe' : 'rg'}`);
+  // Recursively chmod 755 ALL files in vendor/ripgrep/
+  function fixAll(dir) {
+    const entries = readdirSync(dir);
+    for (const entry of entries) {
+      const fp = join(dir, entry);
+      const st = statSync(fp);
+      if (st.isDirectory()) {
+        fixAll(fp);
+      } else {
+        try {
+          chmodSync(fp, 0o755);
+          log('chmod 755: ' + fp.replace(pkgRoot + '/', ''));
+        } catch (e) {
+          log('chmod failed: ' + fp.replace(pkgRoot + '/', '') + ' → ' + e.message);
+        }
+      }
     }
   }
+  fixAll(vendorDir);
 
   // Remove macOS quarantine attribute if applicable
   if (platform() === 'darwin') {
-    const xattrCmd = 'xattr';
     try {
-      execSync(`${xattrCmd} -dr com.apple.quarantine "${vendorDir}"`, { stdio: 'ignore' });
-      console.log('postinstall: removed macOS quarantine attribute');
-    } catch {
-      // xattr not available, skip
+      execSync('xattr -dr com.apple.quarantine "' + vendorDir + '"', { stdio: 'pipe' });
+      log('Removed macOS quarantine attribute');
+    } catch (err) {
+      log('xattr skipped (ok if not applicable): ' + err.message);
     }
   }
 
-  console.log('postinstall: ripgrep setup complete');
+  log('Postinstall complete');
 } catch (err) {
-  console.error('postinstall: failed to fix ripgrep permissions:', err.message);
-  // Don't fail the install, just warn
+  log('FATAL ERROR: ' + err.message);
 }
 
 process.exit(0);
