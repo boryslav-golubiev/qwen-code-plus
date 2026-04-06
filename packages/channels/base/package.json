@@ -1,5 +1,5 @@
 {
-  "name": "@qwen-code/channel-base",
+  "name": "@boryslav-golubiev/channel-base",
   "version": "0.14.1",
   "description": "Base channel infrastructure for Qwen Code",
   "type": "module",

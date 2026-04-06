@@ -1,13 +1,13 @@
 {
-  "name": "qwen-code-vscode-ide-companion",
-  "displayName": "Qwen Code Companion",
+  "name": "qwen-code-plus-companion",
+  "displayName": "Qwen Code Plus Companion",
   "description": "Enable Qwen Code with direct access to your VS Code workspace.",
   "version": "0.14.1",
   "publisher": "qwenlm",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/QwenLM/qwen-code.git",
+    "url": "https://github.com/boryslav-golubiev/qwen-code-plus.git",
     "directory": "packages/vscode-ide-companion"
   },
   "engines": {
@@ -220,7 +220,7 @@
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "^0.14.1",
-    "@qwen-code/webui": "*",
+    "@boryslav-golubiev/webui": "*",
     "@modelcontextprotocol/sdk": "^1.25.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",

@@ -13,7 +13,7 @@ import type {
   ToolRegistry,
   ToolResultDisplay,
   TodoResultDisplay,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 
 describe('HistoryReplayer', () => {
   let mockContext: SessionContext;

@@ -1,5 +1,5 @@
 {
-  "name": "@qwen-code/qwen-code-test-utils",
+  "name": "@boryslav-golubiev/qwen-code-plus-test-utils",
   "version": "0.14.1",
   "private": true,
   "main": "src/index.ts",

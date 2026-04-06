@@ -22,7 +22,7 @@ import {
   type SDKUserMessage,
   type ToolUseBlock,
   type ContentBlock,
-} from '@qwen-code/sdk';
+} from '@boryslav-golubiev/sdk';
 import {
   SDKTestHelper,
   createSharedTestOptions,

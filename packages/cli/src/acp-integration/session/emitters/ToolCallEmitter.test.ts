@@ -12,8 +12,8 @@ import type {
   ToolRegistry,
   AnyDeclarativeTool,
   AnyToolInvocation,
-} from '@qwen-code/qwen-code-core';
-import { Kind, TodoWriteTool } from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
+import { Kind, TodoWriteTool } from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Part } from '@google/genai';
 
 // Helper to create mock message parts for tests

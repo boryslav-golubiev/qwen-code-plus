@@ -34,8 +34,8 @@ vi.mock('../i18n/index.js', () => ({
   }),
 }));
 
-// Mock @qwen-code/qwen-code-core
-vi.mock('@qwen-code/qwen-code-core', () => ({
+// Mock @boryslav-golubiev/qwen-code-plus-core
+vi.mock('@boryslav-golubiev/qwen-code-plus-core', () => ({
   Storage: {
     getGlobalQwenDir: vi.fn(() => '/mock/home/.qwen'),
   },
@@ -309,12 +309,12 @@ describe('languageUtils', () => {
       );
     });
 
-    it('should NOT overwrite file when it already exists with valid content', () => {
+    it('should NOT overwrite file when content matches resolved language', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(i18n.detectSystemLanguage).mockReturnValue('en');
       vi.mocked(fs.readFileSync).mockReturnValue(
-        `# Output language preference: French
-<!-- qwen-code:llm-output-language: French -->
+        `# Output language preference: English
+<!-- qwen-code:llm-output-language: English -->
 `,
       );
 
@@ -323,18 +323,21 @@ describe('languageUtils', () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
-    it('should NOT overwrite file even when setting differs from existing content', () => {
+    it('should overwrite file when language setting differs', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue(
-        `# Output language preference: French
-<!-- qwen-code:llm-output-language: French -->
+        `# Output language preference: English
+<!-- qwen-code:llm-output-language: English -->
 `,
       );
 
       initializeLlmOutputLanguage('Japanese');
 
-      // Should NOT overwrite - user's existing file takes precedence
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      expect(fs.writeFileSync).toHaveBeenCalledWith(
+        expect.stringContaining('output-language.md'),
+        expect.stringContaining('Japanese'),
+        'utf-8',
+      );
     });
 
     it('should resolve "auto" to detected system language', () => {

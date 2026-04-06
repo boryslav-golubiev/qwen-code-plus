@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import pathMod from 'node:path';
 import { useState, useCallback, useEffect, useMemo, useReducer } from 'react';
-import { createDebugLogger, unescapePath } from '@qwen-code/qwen-code-core';
+import { createDebugLogger, unescapePath } from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   toCodePoints,
   cpLen,

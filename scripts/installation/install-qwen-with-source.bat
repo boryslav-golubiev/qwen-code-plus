@@ -100,8 +100,8 @@ if exist "!NODEJS_PATH!\npm.cmd" (
 
 REM Install Qwen Code with source information
 echo INFO: Installing Qwen Code with source: %SOURCE%
-echo INFO: Running: %NPM_CMD% install -g @qwen-code/qwen-code@latest --registry https://registry.npmmirror.com
-call "%NPM_CMD%" install -g @qwen-code/qwen-code@latest --registry https://registry.npmmirror.com
+echo INFO: Running: %NPM_CMD% install -g @boryslav-golubiev/qwen-code-plus@latest --registry https://registry.npmmirror.com
+call "%NPM_CMD%" install -g @boryslav-golubiev/qwen-code-plus@latest --registry https://registry.npmmirror.com
 
 if %ERRORLEVEL% EQU 0 (
     echo SUCCESS: Qwen Code installed successfully!

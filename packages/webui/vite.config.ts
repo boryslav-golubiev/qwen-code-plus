@@ -10,7 +10,7 @@ import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
 /**
- * Vite configuration for @qwen-code/webui library
+ * Vite configuration for @boryslav-golubiev/webui library
  *
  * Build outputs:
  * - ESM: dist/index.js (primary format)
@@ -19,9 +19,9 @@ import { resolve } from 'path';
  * - TypeScript declarations: dist/index.d.ts
  * - CSS: dist/styles.css (optional styles)
  *
- * The followup subpath (@qwen-code/webui/followup) is built separately
+ * The followup subpath (@boryslav-golubiev/webui/followup) is built separately
  * via vite.config.followup.ts so that the root entry stays free of
- * @qwen-code/qwen-code-core dependencies.
+ * @boryslav-golubiev/qwen-code-plus-core dependencies.
  */
 export default defineConfig({
   plugins: [

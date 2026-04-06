@@ -6,17 +6,17 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { DataProcessor } from './DataProcessor.js';
-import type { Config, ChatRecord } from '@qwen-code/qwen-code-core';
+import type { Config, ChatRecord } from '@boryslav-golubiev/qwen-code-plus-core';
 import type {
   InsightData,
   SessionFacets,
 } from '../types/StaticInsightTypes.js';
 
 // Mock dependencies
-vi.mock('@qwen-code/qwen-code-core', async () => {
+vi.mock('@boryslav-golubiev/qwen-code-plus-core', async () => {
   const actual = await vi.importActual<
-    typeof import('@qwen-code/qwen-code-core')
-  >('@qwen-code/qwen-code-core');
+    typeof import('@boryslav-golubiev/qwen-code-plus-core')
+  >('@boryslav-golubiev/qwen-code-plus-core');
   return {
     ...actual,
     read: vi.fn(),
@@ -39,7 +39,7 @@ vi.mock('fs/promises', () => ({
 }));
 
 import fs from 'fs/promises';
-import { read as readJsonlFile } from '@qwen-code/qwen-code-core';
+import { read as readJsonlFile } from '@boryslav-golubiev/qwen-code-plus-core';
 
 const mockedFs = vi.mocked(fs);
 const mockedReadJsonlFile = vi.mocked(readJsonlFile);

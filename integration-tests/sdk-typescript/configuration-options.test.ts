@@ -17,7 +17,7 @@ import {
   isSDKAssistantMessage,
   isSDKSystemMessage,
   type SDKMessage,
-} from '@qwen-code/sdk';
+} from '@boryslav-golubiev/sdk';
 import {
   SDKTestHelper,
   extractText,

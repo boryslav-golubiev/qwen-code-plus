@@ -3,12 +3,12 @@ import * as os from 'node:os';
 import type { CommandModule } from 'yargs';
 import { loadSettings } from '../../config/settings.js';
 import { writeStderrLine, writeStdoutLine } from '../../utils/stdioHelpers.js';
-import { AcpBridge, SessionRouter } from '@qwen-code/channel-base';
+import { AcpBridge, SessionRouter } from '@boryslav-golubiev/channel-base';
 import type {
   ChannelBase,
   ChannelPlugin,
   ToolCallEvent,
-} from '@qwen-code/channel-base';
+} from '@boryslav-golubiev/channel-base';
 import { getPlugin, registerPlugin } from './channel-registry.js';
 import { findCliEntryPath, parseChannelConfig } from './config-utils.js';
 import {

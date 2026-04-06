@@ -5,7 +5,7 @@
  */
 
 import * as osActual from 'node:os';
-import { FatalConfigError, ideContextStore } from '@qwen-code/qwen-code-core';
+import { FatalConfigError, ideContextStore } from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   describe,
   it,

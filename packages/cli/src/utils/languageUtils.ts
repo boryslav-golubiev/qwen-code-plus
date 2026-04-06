@@ -12,7 +12,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Storage } from '@qwen-code/qwen-code-core';
+import { Storage } from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   detectSystemLanguage,
   getLanguageNameFromLocale,
@@ -175,19 +175,17 @@ export function updateOutputLanguageFile(settingValue: string): void {
  * @param outputLanguage - The output language setting value (e.g., 'auto', 'Chinese', etc.)
  *
  * Behavior:
- * - If the rule file already exists and contains a valid language setting, do nothing (preserve user modifications)
- * - If the rule file doesn't exist, create it with the resolved language ('auto' -> detected system language, or use as-is)
+ * - Resolves the setting value ('auto' -> detected system language, or use as-is)
+ * - Ensures the rule file matches the resolved language
+ * - Creates the file if it doesn't exist
  */
 export function initializeLlmOutputLanguage(outputLanguage?: string): void {
-  // Check if the file already exists and has valid content
+  // Resolve 'auto' or undefined to the detected system language
+  const resolved = resolveOutputLanguage(outputLanguage);
   const currentFileLanguage = readOutputLanguageFromFile();
 
-  // If file exists with valid language, preserve user's setting - do nothing
-  if (currentFileLanguage) {
-    return;
+  // Only write if the file doesn't match the resolved language
+  if (currentFileLanguage !== resolved) {
+    writeOutputLanguageFile(resolved);
   }
-
-  // File doesn't exist or has invalid content, create it with resolved language
-  const resolved = resolveOutputLanguage(outputLanguage);
-  writeOutputLanguageFile(resolved);
 }

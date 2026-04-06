@@ -13,12 +13,12 @@ import type {
   ServerGeminiStreamEvent,
   AgentResultDisplay,
   McpToolProgressData,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   GeminiEventType,
   ToolErrorType,
   parseAndFormatApiError,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Part, GenerateContentResponseUsageMetadata } from '@google/genai';
 import type {
   CLIAssistantMessage,

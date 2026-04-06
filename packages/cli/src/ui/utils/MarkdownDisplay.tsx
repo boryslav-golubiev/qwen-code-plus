@@ -111,7 +111,7 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
         lines[index + 1].match(tableSeparatorRegex)
       ) {
         inTable = true;
-        tableHeaders = tableRowMatch[1].split(/(?<!\\)\|/).map((cell) => cell.trim().replaceAll('\\|', '|'));
+        tableHeaders = tableRowMatch[1].split('|').map((cell) => cell.trim());
         tableRows = [];
       } else {
         // Not a table, treat as regular text
@@ -127,7 +127,7 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
       // Skip separator line - already handled
     } else if (inTable && tableRowMatch) {
       // Add table row
-      const cells = tableRowMatch[1].split(/(?<!\\)\|/).map((cell) => cell.trim().replaceAll('\\|', '|'));
+      const cells = tableRowMatch[1].split('|').map((cell) => cell.trim());
       // Ensure row has same column count as headers
       while (cells.length < tableHeaders.length) {
         cells.push('');

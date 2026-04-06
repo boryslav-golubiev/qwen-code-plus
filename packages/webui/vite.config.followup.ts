@@ -3,10 +3,10 @@
  * Copyright 2025 Qwen Team
  * SPDX-License-Identifier: Apache-2.0
  *
- * Separate Vite config for the @qwen-code/webui/followup subpath entry.
+ * Separate Vite config for the @boryslav-golubiev/webui/followup subpath entry.
  *
  * Built independently so that the root entry (vite.config.ts) stays free
- * of @qwen-code/qwen-code-core and can retain UMD output.
+ * of @boryslav-golubiev/qwen-code-plus-core and can retain UMD output.
  */
 
 import { defineConfig } from 'vite';
@@ -42,7 +42,7 @@ export default defineConfig({
         'react',
         'react-dom',
         'react/jsx-runtime',
-        '@qwen-code/qwen-code-core',
+        '@boryslav-golubiev/qwen-code-plus-core',
       ],
     },
     sourcemap: true,

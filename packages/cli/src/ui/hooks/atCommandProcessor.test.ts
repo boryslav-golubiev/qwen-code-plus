@@ -7,13 +7,13 @@
 import type { Mock } from 'vitest';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { handleAtCommand } from './atCommandProcessor.js';
-import type { Config } from '@qwen-code/qwen-code-core';
+import type { Config } from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   FileDiscoveryService,
   StandardFileSystemService,
   COMMON_IGNORE_PATTERNS,
   // DEFAULT_FILE_EXCLUDES,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import * as os from 'node:os';
 import { ToolCallStatus } from '../types.js';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';

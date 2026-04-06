@@ -9,7 +9,7 @@ import {
   getAllGeminiMdFilenames,
   loadServerHierarchicalMemory,
   QWEN_DIR,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs/promises';

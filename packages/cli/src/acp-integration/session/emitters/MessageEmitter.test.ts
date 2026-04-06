@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MessageEmitter } from './MessageEmitter.js';
 import type { SessionContext } from '../types.js';
-import type { Config } from '@qwen-code/qwen-code-core';
+import type { Config } from '@boryslav-golubiev/qwen-code-plus-core';
 
 describe('MessageEmitter', () => {
   let mockContext: SessionContext;

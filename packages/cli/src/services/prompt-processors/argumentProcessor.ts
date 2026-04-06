@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { appendToLastTextPart } from '@qwen-code/qwen-code-core';
+import { appendToLastTextPart } from '@boryslav-golubiev/qwen-code-plus-core';
 import type { IPromptProcessor, PromptPipelineContent } from './types.js';
 import type { CommandContext } from '../../ui/commands/types.js';
 

@@ -15,7 +15,7 @@ import {
   isSDKResultMessage,
   type TextBlock,
   type SDKUserMessage,
-} from '@qwen-code/sdk';
+} from '@boryslav-golubiev/sdk';
 import {
   SDKTestHelper,
   createSharedTestOptions,

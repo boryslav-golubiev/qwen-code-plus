@@ -17,7 +17,7 @@ import {
   type HookConfig,
   createDebugLogger,
   HOOKS_CONFIG_FIELDS,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type {
   HooksManagementDialogProps,
   HookEventDisplayInfo,

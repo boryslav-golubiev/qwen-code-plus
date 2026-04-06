@@ -8,8 +8,8 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import * as path from 'node:path';
 import mock from 'mock-fs';
 import { FileCommandLoader } from './FileCommandLoader.js';
-import type { Config } from '@qwen-code/qwen-code-core';
-import { Storage } from '@qwen-code/qwen-code-core';
+import type { Config } from '@boryslav-golubiev/qwen-code-plus-core';
+import { Storage } from '@boryslav-golubiev/qwen-code-plus-core';
 
 describe('FileCommandLoader - Extension Commands Support', () => {
   const projectRoot = '/test/project';

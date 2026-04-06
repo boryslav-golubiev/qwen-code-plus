@@ -25,7 +25,7 @@ import {
   ToolNames,
   SkillTool,
   buildSkillLlmContent,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { t } from '../../i18n/index.js';
 
 /**

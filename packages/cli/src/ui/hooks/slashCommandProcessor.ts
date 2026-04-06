@@ -18,7 +18,7 @@ import {
   SlashCommandStatus,
   ToolConfirmationOutcome,
   IdeClient,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { useSessionStats } from '../contexts/SessionContext.js';
 import type {
   Message,
@@ -333,24 +333,17 @@ export const useSlashCommandProcessor = (
   useEffect(() => {
     const controller = new AbortController();
     const load = async () => {
-      try {
-        const loaders = [
-          new McpPromptLoader(config),
-          new BuiltinCommandLoader(config),
-          new BundledSkillLoader(config),
-          new FileCommandLoader(config),
-        ];
-        const commandService = await CommandService.create(
-          loaders,
-          controller.signal,
-        );
-        // Avoid overwriting newer results from a subsequent effect run
-        if (!controller.signal.aborted) {
-          setCommands(commandService.getCommands());
-        }
-      } catch (error) {
-        debugLogger.error('Failed to load slash commands:', error);
-      }
+      const loaders = [
+        new McpPromptLoader(config),
+        new BuiltinCommandLoader(config),
+        new BundledSkillLoader(config),
+        new FileCommandLoader(config),
+      ];
+      const commandService = await CommandService.create(
+        loaders,
+        controller.signal,
+      );
+      setCommands(commandService.getCommands());
     };
 
     load();

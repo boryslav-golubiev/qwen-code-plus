@@ -18,7 +18,7 @@ import { useShellHistory } from '../hooks/useShellHistory.js';
 import { useReverseSearchCompletion } from '../hooks/useReverseSearchCompletion.js';
 import { useCommandCompletion } from '../hooks/useCommandCompletion.js';
 import { useFollowupSuggestionsCLI } from '../hooks/useFollowupSuggestions.js';
-import type { Config } from '@qwen-code/qwen-code-core';
+import type { Config } from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Key } from '../hooks/useKeypress.js';
 import { keyMatchers, Command } from '../keyMatchers.js';
 import type { CommandContext, SlashCommand } from '../commands/types.js';
@@ -26,7 +26,7 @@ import {
   ApprovalMode,
   Storage,
   createDebugLogger,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   parseInputForHighlighting,
   buildSegmentsForVisualSlice,
@@ -38,6 +38,8 @@ import {
   cleanupOldClipboardImages,
 } from '../utils/clipboardUtils.js';
 import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
+import type { Part, PartListUnion } from '@google/genai';
 import { SCREEN_READER_USER_PREFIX } from '../textConstants.js';
 import { useShellFocusState } from '../contexts/ShellFocusContext.js';
 import { useUIState } from '../contexts/UIStateContext.js';
@@ -64,6 +66,8 @@ const debugLogger = createDebugLogger('INPUT_PROMPT');
 export interface InputPromptProps {
   buffer: TextBuffer;
   onSubmit: (value: string) => void;
+  /** Optional callback that accepts PartListUnion (for vision-capable models with image attachments) */
+  onSubmitWithAttachments?: (parts: PartListUnion) => void;
   userMessages: readonly string[];
   onClearScreen: () => void;
   config: Config;
@@ -95,9 +99,29 @@ export { calculatePromptWidths } from '../utils/layoutUtils.js';
 const LARGE_PASTE_CHAR_THRESHOLD = 1000;
 const LARGE_PASTE_LINE_THRESHOLD = 10;
 
+/**
+ * Detect MIME type for image files based on file extension
+ */
+function detectImageMimeType(filePath: string): string {
+  const ext = path.extname(filePath).toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.bmp': 'image/bmp',
+    '.tiff': 'image/tiff',
+    '.tif': 'image/tiff',
+    '.heic': 'image/heic',
+  };
+  return mimeTypes[ext] || 'image/jpeg';
+}
+
 export const InputPrompt: React.FC<InputPromptProps> = ({
   buffer,
   onSubmit,
+  onSubmitWithAttachments,
   userMessages,
   onClearScreen,
   config,
@@ -284,7 +308,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
   );
 
   const handleSubmitAndClear = useCallback(
-    (submittedValue: string) => {
+    async (submittedValue: string) => {
       // Expand any large paste placeholders to their full content before submitting
       let finalValue = submittedValue;
       if (pendingPastes.size > 0) {
@@ -307,18 +331,48 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
         shellHistory.addCommandToHistory(finalValue);
       }
 
-      // Convert attachments to @references and prepend to the message
-      if (attachments.length > 0) {
-        const attachmentRefs = attachments
-          .map((att) => `@${path.relative(config.getTargetDir(), att.path)}`)
-          .join(' ');
-        finalValue = `${attachmentRefs}\n\n${finalValue.trim()}`;
-      }
+      // Check if we have attachments and should send them as inlineData
+      const hasCompletedAttachments = attachments.length > 0;
 
-      // Clear the buffer *before* calling onSubmit to prevent potential re-submission
-      // if onSubmit triggers a re-render while the buffer still holds the old value.
-      buffer.setText('');
-      onSubmit(finalValue);
+      if (hasCompletedAttachments && onSubmitWithAttachments) {
+        // Build Part[] with inlineData for images
+        const parts: Part[] = [];
+
+        // Add image parts first
+        for (const att of attachments) {
+          try {
+            const imageBuffer = await fs.readFile(att.path);
+            const mimeType = detectImageMimeType(att.path);
+            parts.push({
+              inlineData: {
+                mimeType,
+                data: imageBuffer.toString('base64'),
+              },
+            });
+          } catch (error) {
+            debugLogger.error(`Failed to read image ${att.path}: ${error}`);
+            // Fallback to text reference
+            parts.push({
+              text: `[Image: ${att.filename} - failed to load]`,
+            });
+          }
+        }
+
+        // Add user text
+        if (finalValue.trim()) {
+          parts.push({ text: finalValue.trim() });
+        }
+
+        // Clear the buffer before submission
+        buffer.setText('');
+
+        // Submit as Parts
+        onSubmitWithAttachments(parts);
+      } else {
+        // No attachments - submit as string
+        buffer.setText('');
+        onSubmit(finalValue.trim());
+      }
 
       // Dismiss follow-up suggestion after submit
       followup.dismiss();
@@ -333,6 +387,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
     },
     [
       onSubmit,
+      onSubmitWithAttachments,
       buffer,
       resetCompletionState,
       shellModeActive,
@@ -404,10 +459,12 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
             // Ignore cleanup errors
           });
 
-          // Add as attachment instead of inserting @reference into text
           const filename = path.basename(imagePath);
+          const attachmentId = String(Date.now());
+
+          // Add attachment (will be sent as inlineData on submit)
           const newAttachment: Attachment = {
-            id: String(Date.now()),
+            id: attachmentId,
             path: imagePath,
             filename,
           };
@@ -801,10 +858,12 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
           return true;
         }
         if (key.name === 'backspace' || key.name === 'delete') {
+          // Delete attachment
           handleAttachmentDelete(selectedAttachmentIndex);
           return true;
         }
         if (key.name === 'return' || key.name === 'escape') {
+          // Exit attachment mode
           setIsAttachmentMode(false);
           setSelectedAttachmentIndex(-1);
           return true;
@@ -1183,7 +1242,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
   return (
     <>
       {attachments.length > 0 && (
-        <Box marginLeft={2} marginBottom={0}>
+        <Box marginLeft={2} marginBottom={0} flexDirection="row">
           <Text color={theme.text.secondary}>{t('Attachments: ')}</Text>
           {attachments.map((att, idx) => (
             <Text
@@ -1194,7 +1253,8 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
                   : theme.text.secondary
               }
             >
-              [{att.filename}]{idx < attachments.length - 1 ? ' ' : ''}
+              {`[${att.filename}]`}
+              {idx < attachments.length - 1 ? ', ' : ''}
             </Text>
           ))}
         </Box>
@@ -1236,7 +1296,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
       )}
       {/* Attachment hints - show when there are attachments and no suggestions visible */}
       {attachments.length > 0 && !shouldShowSuggestions && (
-        <Box marginLeft={2} marginRight={2}>
+        <Box marginLeft={2} marginRight={2} flexDirection="column">
           <Text color={theme.text.secondary}>
             {isAttachmentMode
               ? t('← → select, Delete to remove, ↓ to exit')

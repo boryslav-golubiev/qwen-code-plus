@@ -133,12 +133,7 @@ class ExitPlanModeToolInvocation extends BaseToolInvocation<
     const { plan } = this.params;
 
     try {
-      // In YOLO mode the scheduler auto-approves without calling onConfirm(),
-      // so wasApproved stays false. Treat YOLO as implicit approval.
-      const isYolo = this.config.getApprovalMode() === ApprovalMode.YOLO;
-      const effectivelyApproved = this.wasApproved || isYolo;
-
-      if (!effectivelyApproved) {
+      if (!this.wasApproved) {
         const rejectionMessage =
           'Plan execution was not approved. Remaining in plan mode.';
         return {

@@ -5,7 +5,7 @@
  */
 
 import process from 'node:process';
-import { createDebugLogger } from '@qwen-code/qwen-code-core';
+import { createDebugLogger } from '@boryslav-golubiev/qwen-code-plus-core';
 
 export enum AttentionNotificationReason {
   ToolApproval = 'tool_approval',

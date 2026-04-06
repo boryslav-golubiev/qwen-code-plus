@@ -19,11 +19,11 @@ import type {
   ToolCall,
   Status as CoreStatus,
   EditorType,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   CoreToolScheduler,
   createDebugLogger,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { useCallback, useState, useMemo } from 'react';
 import type {
   HistoryItemToolGroup,

@@ -13,12 +13,13 @@ import {
   type AuthType,
   type EditorType,
   type ApprovalMode,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { type SettingScope } from '../../config/settings.js';
 import { type CodingPlanRegion } from '../../constants/codingPlan.js';
 import { type AlibabaStandardRegion } from '../../constants/alibabaStandardApiKey.js';
 import type { AuthState } from '../types.js';
 import { type ArenaDialogType } from '../hooks/useArenaCommand.js';
+import type { PartListUnion } from '@google/genai';
 // OpenAICredentials type (previously imported from OpenAIKeyPrompt)
 export interface OpenAICredentials {
   apiKey: string;
@@ -77,6 +78,7 @@ export interface UIActions {
   onSuggestionsVisibilityChange: (visible: boolean) => void;
   refreshStatic: () => void;
   handleFinalSubmit: (value: string) => void;
+  handleFinalSubmitWithAttachments: (parts: PartListUnion) => void;
   handleRetryLastPrompt: () => void;
   handleClearScreen: () => void;
   // Welcome back dialog

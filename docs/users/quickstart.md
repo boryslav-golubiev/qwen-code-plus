@@ -43,7 +43,7 @@ Make sure you have Node.js 20 or later installed. Download it from [nodejs.org](
 **NPM**
 
 ```bash
-npm install -g @qwen-code/qwen-code@latest
+npm install -g @boryslav-golubiev/qwen-code-plus@latest
 ```
 
 **Homebrew (macOS, Linux)**

@@ -17,12 +17,12 @@ import type {
   AgentStreamTextEvent,
   ToolEditConfirmationDetails,
   ToolInfoConfirmationDetails,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   AgentEventType,
   ToolConfirmationOutcome,
   TodoWriteTool,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type { AgentSideConnection } from '@agentclientprotocol/sdk';
 import { EventEmitter } from 'node:events';
 

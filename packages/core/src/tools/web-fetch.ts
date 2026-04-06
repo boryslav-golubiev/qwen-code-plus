@@ -5,6 +5,7 @@
  */
 
 import { convert } from 'html-to-text';
+import { ProxyAgent, setGlobalDispatcher } from 'undici';
 import type { Config } from '../config/config.js';
 import { fetchWithTimeout, isPrivateIp } from '../utils/fetch.js';
 import { getResponseText } from '../utils/partUtils.js';
@@ -238,6 +239,10 @@ export class WebFetchTool extends BaseDeclarativeTool<
         type: 'object',
       },
     );
+    const proxy = config.getProxy();
+    if (proxy) {
+      setGlobalDispatcher(new ProxyAgent(proxy as string));
+    }
   }
 
   protected override validateToolParamValues(

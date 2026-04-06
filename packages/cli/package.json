@@ -1,16 +1,16 @@
 {
-  "name": "@qwen-code/qwen-code",
-  "version": "0.14.1",
-  "description": "Qwen Code",
+  "name": "@boryslav-golubiev/qwen-code-plus",
+  "version": "0.14.2",
+  "description": "Qwen Code Plus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QwenLM/qwen-code.git"
+    "url": "git+https://github.com/boryslav-golubiev/qwen-code-plus.git"
   },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "qwen": "dist/index.js"
+    "qwen-plus": "dist/index.js"
   },
   "exports": {
     ".": {
@@ -33,19 +33,19 @@
     "dist"
   ],
   "config": {
-    "sandboxImageUri": "ghcr.io/qwenlm/qwen-code:0.14.1"
+    "sandboxImageUri": "ghcr.io/boryslav-golubiev/qwen-code-plus:0.14.1"
   },
   "dependencies": {
     "@agentclientprotocol/sdk": "^0.14.1",
     "@google/genai": "1.30.0",
     "@iarna/toml": "^2.2.5",
     "@modelcontextprotocol/sdk": "^1.25.1",
-    "@qwen-code/channel-base": "file:../channels/base",
-    "@qwen-code/channel-telegram": "file:../channels/telegram",
-    "@qwen-code/channel-weixin": "file:../channels/weixin",
-    "@qwen-code/channel-dingtalk": "file:../channels/dingtalk",
-    "@qwen-code/qwen-code-core": "file:../core",
-    "@qwen-code/web-templates": "file:../web-templates",
+    "@boryslav-golubiev/channel-base": "file:../channels/base",
+    "@boryslav-golubiev/channel-telegram": "file:../channels/telegram",
+    "@boryslav-golubiev/channel-weixin": "file:../channels/weixin",
+    "@boryslav-golubiev/channel-dingtalk": "file:../channels/dingtalk",
+    "@boryslav-golubiev/qwen-code-plus-core": "file:../core",
+    "@boryslav-golubiev/web-templates": "file:../web-templates",
     "@types/update-notifier": "^6.0.8",
     "ansi-regex": "^6.2.2",
     "command-exists": "^1.2.9",
@@ -78,8 +78,7 @@
   },
   "devDependencies": {
     "@babel/runtime": "^7.27.6",
-    "@google/gemini-cli-test-utils": "file:../test-utils",
-    "@qwen-code/qwen-code-test-utils": "file:../test-utils",
+    "@boryslav-golubiev/qwen-code-plus-test-utils": "file:../test-utils",
     "@testing-library/react": "^16.3.0",
     "@types/archiver": "^6.0.3",
     "@types/command-exists": "^1.2.3",

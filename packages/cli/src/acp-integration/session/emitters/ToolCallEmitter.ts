@@ -23,7 +23,7 @@ import {
   TodoWriteTool,
   Kind,
   ExitPlanModeTool,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 
 /**
  * Unified tool call event emitter.

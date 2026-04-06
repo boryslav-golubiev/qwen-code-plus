@@ -5,11 +5,12 @@
  */
 
 import { Box, Text } from 'ink';
+import type { PartListUnion } from '@google/genai';
 
 const MAX_DISPLAYED_QUEUED_MESSAGES = 3;
 
 export interface QueuedMessageDisplayProps {
-  messageQueue: string[];
+  messageQueue: PartListUnion[];
 }
 
 export const QueuedMessageDisplay = ({
@@ -19,9 +20,20 @@ export const QueuedMessageDisplay = ({
     return null;
   }
 
+  // Convert PartListUnion to display text
+  const messageTexts = messageQueue.map((msg) => {
+    if (typeof msg === 'string') {
+      return msg;
+    } else if (Array.isArray(msg)) {
+      // Extract text from parts
+      return msg.map((p) => (p as any).text || '[image]').join(' ');
+    }
+    return '';
+  });
+
   return (
     <Box flexDirection="column" marginTop={1}>
-      {messageQueue
+      {messageTexts
         .slice(0, MAX_DISPLAYED_QUEUED_MESSAGES)
         .map((message, index) => {
           const preview = message.replace(/\s+/g, ' ');
@@ -34,11 +46,11 @@ export const QueuedMessageDisplay = ({
             </Box>
           );
         })}
-      {messageQueue.length > MAX_DISPLAYED_QUEUED_MESSAGES && (
+      {messageTexts.length > MAX_DISPLAYED_QUEUED_MESSAGES && (
         <Box paddingLeft={2}>
           <Text dimColor>
             ... (+
-            {messageQueue.length - MAX_DISPLAYED_QUEUED_MESSAGES} more)
+            {messageTexts.length - MAX_DISPLAYED_QUEUED_MESSAGES} more)
           </Text>
         </Box>
       )}

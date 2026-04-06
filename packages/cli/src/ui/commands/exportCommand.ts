@@ -12,7 +12,7 @@ import {
   type MessageActionReturn,
   CommandKind,
 } from './types.js';
-import { SessionService } from '@qwen-code/qwen-code-core';
+import { SessionService } from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   collectSessionData,
   normalizeSessionData,

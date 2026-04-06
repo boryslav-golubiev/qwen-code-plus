@@ -423,6 +423,8 @@ export interface ConfigParameters {
   channel?: string;
   /** Model providers configuration grouped by authType */
   modelProvidersConfig?: ModelProvidersConfig;
+  /** Image support model name for clipboard image transcription */
+  imageSupportModel?: string;
   /** Multi-agent collaboration settings (Arena, Team, Swarm) */
   agents?: AgentsCollabSettings;
   /**
@@ -500,6 +502,7 @@ export class Config {
 
   private modelsConfig!: ModelsConfig;
   private readonly modelProvidersConfig?: ModelProvidersConfig;
+  private readonly imageSupportModel?: string;
   private readonly sandbox: SandboxConfig | undefined;
   private readonly targetDir: string;
   private workspaceContext: WorkspaceContext;
@@ -694,6 +697,7 @@ export class Config {
     this.folderTrust = params.folderTrust ?? false;
     this.ideMode = params.ideMode ?? false;
     this.modelProvidersConfig = params.modelProvidersConfig;
+    this.imageSupportModel = params.imageSupportModel;
     this.cliVersion = params.cliVersion;
 
     this.chatRecordingEnabled = params.chatRecording ?? true;
@@ -1335,6 +1339,32 @@ export class Config {
 
   getEmbeddingModel(): string {
     return this.embeddingModel;
+  }
+
+  getImageSupportModel(): string | undefined {
+    return this.imageSupportModel;
+  }
+
+  /**
+   * Check if the current primary model supports vision (image) inputs.
+   * This is used to determine whether to send images as inlineData Parts
+   * or fall back to text transcription.
+   */
+  isVisionCapableModel(): boolean {
+    const modelId = this.getModel();
+    const authType = this.getAuthType();
+
+    // Check if the model registry has vision capability for this model
+    if (authType) {
+      const modelConfig = this.modelsConfig.getResolvedModel(authType, modelId);
+      if (modelConfig?.capabilities?.vision) {
+        return true;
+      }
+    }
+
+    // Fallback: check for known vision model patterns
+    const visionModelPatterns = ['qwen-vl', 'coder-model', 'qwen-omni', 'qwen3.5-plus', 'qwen3.6-plus'];
+    return visionModelPatterns.some(pattern => modelId.includes(pattern));
   }
 
   getSandbox(): SandboxConfig | undefined {

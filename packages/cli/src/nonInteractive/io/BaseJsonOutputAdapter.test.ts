@@ -11,7 +11,7 @@ import {
   type ServerGeminiStreamEvent,
   type ToolCallRequestInfo,
   type AgentResultDisplay,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Part, GenerateContentResponseUsageMetadata } from '@google/genai';
 import type {
   CLIMessage,

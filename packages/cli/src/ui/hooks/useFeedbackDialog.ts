@@ -8,7 +8,7 @@ import {
   type UserFeedbackRating,
   isNodeError,
   AuthType,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { StreamingState, MessageType, type HistoryItem } from '../types.js';
 import {
   SettingScope,

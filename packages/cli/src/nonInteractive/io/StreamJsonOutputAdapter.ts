@@ -9,7 +9,7 @@ import type {
   Config,
   ToolCallRequestInfo,
   McpToolProgressData,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type {
   CLIAssistantMessage,
   CLIMessage,

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qwen Code Plus — AI-Powered Terminal Agent</title>
+    <meta name="description" content="An open-source AI agent for the terminal, optimized for Qwen3-Coder. Understand codebases, automate work, and ship faster.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --bg-card: #16162a;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent: #7c5cfc;
+            --accent-light: #9d85fd;
+            --accent-glow: rgba(124, 92, 252, 0.3);
+            --accent-secondary: #00d4aa;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(124, 92, 252, 0.3);
+            --success: #00d4aa;
+            --warning: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .hero-bg {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(124, 92, 252, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 60%, rgba(0, 212, 170, 0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(124, 92, 252, 0.08) 0%, transparent 40%);
+            animation: bgShift 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, -2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-0.5deg); }
+        }
+
+        .hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--bg-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .tagline .highlight {
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Install section */
+        .install-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            text-align: left;
+        }
+
+        .install-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .install-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .install-tab {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .install-tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .install-tab:hover:not(.active) {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .install-code-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .install-code {
+            flex: 1;
+            padding: 1rem 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-light);
+            overflow-x: auto;
+            white-space: nowrap;
+            border: none;
+            background: transparent;
+            outline: none;
+        }
+
+        .copy-btn {
+            padding: 0.75rem 1.25rem;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .copy-btn:hover { background: var(--accent-light); }
+        .copy-btn.copied { background: var(--success); }
+
+        .install-panel { display: none; }
+        .install-panel.active { display: block; }
+
+        /* CTA buttons */
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-accent);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        /* Features */
+        .features-section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .features-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Terminal preview */
+        .terminal-section {
+            position: relative;
+            z-index: 1;
+            padding: 2rem 2rem 6rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .terminal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #febc2e; }
+        .terminal-dot.green { background: #28c840; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .terminal-line { margin-bottom: 0.5rem; }
+        .terminal-prompt { color: var(--accent-secondary); }
+        .terminal-command { color: var(--text-primary); }
+        .terminal-output { color: var(--text-secondary); }
+        .terminal-success { color: var(--success); }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.1em;
+            background: var(--accent);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+
+        .footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .stats-row { gap: 2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .install-section { padding: 1.5rem; }
+            .install-code { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero-bg">
+        <div class="hero-content">
+            <div class="logo-container">
+                <div class="logo-icon">Q+</div>
+                <span class="logo-text">Qwen Code Plus</span>
+            </div>
+
+            <h1 class="tagline">
+                Your AI agent in the <span class="highlight">terminal</span>
+            </h1>
+            <p class="subtitle">
+                Open-source, OAuth-free. Understand large codebases, automate tedious work, and ship faster — powered by Qwen3-Coder.
+            </p>
+
+            <!-- Install -->
+            <div class="install-section">
+                <div class="install-title">Quick Install</div>
+
+                <div class="install-tabs" role="tablist">
+                    <button class="install-tab active" data-tab="macos" role="tab">Linux / macOS</button>
+                    <button class="install-tab" data-tab="windows" role="tab">Windows</button>
+                    <button class="install-tab" data-tab="npm" role="tab">npm</button>
+                </div>
+
+                <div class="install-panel active" id="panel-macos">
+                    <div class="install-code-wrapper">
+                        <code class="install-code" id="code-macos">curl -fsSL https://raw.githubusercontent.com/boryslav-golubiev/qwen-code-plus/refs/heads/main/scripts/installation/install-qwen-plus.sh | bash</code>
+                        <button class="copy-btn" data-target="code-macos">Copy</button>
+                    </div>
+                </div>
+
+                <div class="install-panel" id="panel-windows">
+                    <div class="install-code-wrapper">
+                        <code class="install-code" id="code-windows">curl -fsSL https://raw.githubusercontent.com/boryslav-golubiev/qwen-code-plus/refs/heads/main/scripts/installation/install-qwen-plus.bat -o install.bat &amp;&amp; install.bat</code>
+                        <button class="copy-btn" data-target="code-windows">Copy</button>
+                    </div>
+                </div>
+
+                <div class="install-panel" id="panel-npm">
+                    <div class="install-code-wrapper">
+                        <code class="install-code" id="code-npm">npm install -g @boryslav-golubiev/qwen-code-plus@latest</code>
+                        <button class="copy-btn" data-target="code-npm">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-group">
+                <a href="https://github.com/boryslav-golubiev/qwen-code-plus" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    View on GitHub
+                </a>
+                <a href="https://github.com/boryslav-golubiev/qwen-code-plus/blob/main/README.md" class="btn btn-secondary">
+                    📖 Documentation
+                </a>
+            </div>
+
+            <!-- Terminal preview -->
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <div class="terminal-title">qwen-plus</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">❯ </span>
+                        <span class="terminal-command">qwen-plus</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-success">✅</span> <span class="terminal-output">Authenticated · Model: qwen3-coder-plus</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-success">✅</span> <span class="terminal-output">2 tools available · Workspace: ./my-project</span>
+                    </div>
+                    <div class="terminal-line">&nbsp;</div>
+                    <div class="terminal-line">
+                        <span class="terminal-output">Hello! How can I help you today?</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">❯ </span>
+                        <span class="terminal-cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section">
+        <h2 class="features-title">Why Qwen Code Plus?</h2>
+        <p class="features-subtitle">Built on the original Qwen Code with enhancements for better code understanding and developer experience.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">AI-Powered Agent</h3>
+                <p class="feature-desc">Understand large codebases, refactor code, write tests, and automate repetitive tasks — all from your terminal.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔓</div>
+                <h3 class="feature-title">OpenAI-Compatible API</h3>
+                <p class="feature-desc">Use any OpenAI-compatible API or sign in with free Qwen OAuth for 1,000 requests/day. No vendor lock-in.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Optimized for Qwen3-Coder</h3>
+                <p class="feature-desc">Fine-tuned prompts and workflows specifically optimized for Qwen3-Coder models for better code generation.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛠️</div>
+                <h3 class="feature-title">Rich Tool System</h3>
+                <p class="feature-desc">File operations, shell execution, web fetch, LSP integration, MCP client, and custom Skills — all built-in.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔌</div>
+                <h3 class="feature-title">SubAgents & Skills</h3>
+                <p class="feature-desc">Delegate tasks to specialized agents. Create reusable skills with Markdown + YAML configuration.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3 class="feature-title">IDE Integration</h3>
+                <p class="feature-desc">VS Code companion, Zed extension, and JetBrains integration. Works the way you code.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            <a href="https://github.com/boryslav-golubiev/qwen-code-plus">GitHub</a> ·
+            <a href="https://github.com/boryslav-golubiev/qwen-code-plus/blob/main/README.md">Docs</a> ·
+            <a href="https://github.com/boryslav-golubiev/qwen-code-plus/issues">Issues</a>
+        </p>
+        <p style="margin-top: 0.5rem;">Based on <a href="https://github.com/QwenLM/qwen-code">Qwen Code</a> by Alibaba · Licensed under Apache 2.0</p>
+    </footer>
+
+    <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.install-tab');
+        const panels = document.querySelectorAll('.install-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const target = document.getElementById(btn.dataset.target);
+                const text = target.textContent;
+                try {
+                    await navigator.clipboard.writeText(text);
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    // Fallback for older browsers
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

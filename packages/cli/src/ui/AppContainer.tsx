@@ -53,7 +53,7 @@ import {
   IDLE_SPECULATION,
   ApprovalMode,
   type PermissionMode,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { buildResumedHistoryItems } from './utils/resumeHistoryUtils.js';
 import { validateAuthMethod } from '../config/auth.js';
 import { loadHierarchicalGeminiMemory } from '../config/config.js';
@@ -79,6 +79,7 @@ import * as fs from 'node:fs';
 import { basename } from 'node:path';
 import { computeWindowTitle } from '../utils/windowTitle.js';
 import { clearScreen } from '../utils/stdioHelpers.js';
+import type { Part, PartListUnion } from '@google/genai';
 import { useTextBuffer } from './components/shared/text-buffer.js';
 import { useLogger } from './hooks/useLogger.js';
 import { useGeminiStream } from './hooks/useGeminiStream.js';
@@ -928,6 +929,33 @@ export const AppContainer = (props: AppContainerProps) => {
       config,
       geminiClient,
       historyManager,
+    ],
+  );
+
+  // Handler for submitting with image attachments as PartListUnion
+  const handleFinalSubmitWithAttachments = useCallback(
+    (parts: PartListUnion) => {
+      // Route to active in-process agent if viewing a sub-agent tab.
+      if (agentViewState.activeView !== 'main') {
+        const agent = agentViewState.agents.get(agentViewState.activeView);
+        if (agent) {
+          // For agents, convert parts to string representation
+          const partsString = typeof parts === 'string' 
+            ? parts 
+            : Array.isArray(parts) 
+              ? (parts as Part[]).map((p) => (p as any).text || '[image]').join(' ')
+              : '';
+          agent.interactiveAgent.enqueueMessage(partsString.trim());
+          return;
+        }
+      }
+
+      // Submit the parts via submitQuery
+      addMessage(parts);
+    },
+    [
+      addMessage,
+      agentViewState,
     ],
   );
 
@@ -2019,6 +2047,7 @@ export const AppContainer = (props: AppContainerProps) => {
       onSuggestionsVisibilityChange: setHasSuggestionsVisible,
       refreshStatic,
       handleFinalSubmit,
+      handleFinalSubmitWithAttachments,
       handleRetryLastPrompt: retryLastPrompt,
       handleClearScreen,
       // Welcome back dialog
@@ -2076,6 +2105,7 @@ export const AppContainer = (props: AppContainerProps) => {
       handleEscapePromptChange,
       refreshStatic,
       handleFinalSubmit,
+      handleFinalSubmitWithAttachments,
       retryLastPrompt,
       handleClearScreen,
       handleWelcomeBackSelection,

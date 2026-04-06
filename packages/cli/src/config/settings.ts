@@ -15,7 +15,7 @@ import {
   getErrorMessage,
   Storage,
   createDebugLogger,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import stripJsonComments from 'strip-json-comments';
 import { DefaultLight } from '../ui/themes/default-light.js';
 import { DefaultDark } from '../ui/themes/default.js';
@@ -375,7 +375,7 @@ export class LoadedSettings {
     setNestedPropertySafe(settingsFile.settings, key, value);
     setNestedPropertySafe(settingsFile.originalSettings, key, value);
     this._merged = this.computeMergedSettings();
-    saveSettings(settingsFile, createSettingsUpdate(key, value));
+    saveSettings(settingsFile);
   }
 }
 
@@ -771,22 +771,7 @@ export function loadSettings(
   );
 }
 
-function createSettingsUpdate(
-  key: string,
-  value: unknown,
-): Record<string, unknown> {
-  const root: Record<string, unknown> = {};
-  setNestedPropertySafe(root, key, value);
-  return root;
-}
-
-export function saveSettings(
-  settingsFile: SettingsFile,
-  updates: Record<string, unknown> = settingsFile.originalSettings as Record<
-    string,
-    unknown
-  >,
-): void {
+export function saveSettings(settingsFile: SettingsFile): void {
   try {
     // Ensure the directory exists
     const dirPath = path.dirname(settingsFile.path);
@@ -795,7 +780,10 @@ export function saveSettings(
     }
 
     // Use the format-preserving update function
-    updateSettingsFilePreservingFormat(settingsFile.path, updates);
+    updateSettingsFilePreservingFormat(
+      settingsFile.path,
+      settingsFile.originalSettings as Record<string, unknown>,
+    );
   } catch (error) {
     debugLogger.error('Error saving user settings file.');
     debugLogger.error(error instanceof Error ? error.message : String(error));

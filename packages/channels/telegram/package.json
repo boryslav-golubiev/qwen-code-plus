@@ -1,5 +1,5 @@
 {
-  "name": "@qwen-code/channel-telegram",
+  "name": "@boryslav-golubiev/channel-telegram",
   "version": "0.14.1",
   "description": "Telegram channel adapter for Qwen Code",
   "type": "module",
@@ -18,7 +18,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@qwen-code/channel-base": "file:../base",
+    "@boryslav-golubiev/channel-base": "file:../base",
     "grammy": "^1.41.1",
     "telegram-markdown-formatter": "^0.1.2"
   },

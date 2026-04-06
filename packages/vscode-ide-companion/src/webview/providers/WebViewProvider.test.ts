@@ -22,7 +22,7 @@ const {
   mockOnDidChangeTextEditorSelection: vi.fn(() => ({ dispose: vi.fn() })),
 }));
 
-vi.mock('@qwen-code/qwen-code-core', () => ({
+vi.mock('@boryslav-golubiev/qwen-code-plus-core', () => ({
   Storage: {
     getGlobalTempDir: mockGetGlobalTempDir,
   },

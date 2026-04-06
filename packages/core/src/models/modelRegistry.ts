@@ -176,12 +176,19 @@ export class ModelRegistry {
   ): ResolvedModelConfig {
     this.validateModelConfig(config, authType);
 
+    const generationConfig = config.generationConfig ?? {};
+    
+    // Apply modalities default if not set
+    if (!generationConfig.modalities) {
+      generationConfig.modalities = defaultModalities(config.id);
+    }
+
     return {
       ...config,
       authType,
       name: config.name || config.id,
       baseUrl: config.baseUrl || this.getDefaultBaseUrl(authType),
-      generationConfig: config.generationConfig ?? {},
+      generationConfig,
       capabilities: config.capabilities || {},
     };
   }

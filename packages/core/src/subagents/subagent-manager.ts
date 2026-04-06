@@ -496,12 +496,6 @@ export class SubagentManager {
       subagentsCache.set(level, levelSubagents);
     }
 
-    // Preserve session subagents from old cache
-    const sessionSubagents = this.subagentsCache?.get('session');
-    if (sessionSubagents) {
-      subagentsCache.set('session', sessionSubagents);
-    }
-
     this.subagentsCache = subagentsCache;
     this.notifyChangeListeners();
   }

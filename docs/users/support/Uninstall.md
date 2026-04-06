@@ -36,7 +36,7 @@ Remove-Item -Path (Join-Path $env:LocalAppData "npm-cache\_npx") -Recurse -Force
 If you installed the CLI globally (e.g. `npm install -g @qwen-code/qwen-code`), use the `npm uninstall` command with the `-g` flag to remove it.
 
 ```bash
-npm uninstall -g @qwen-code/qwen-code
+npm uninstall -g @boryslav-golubiev/qwen-code-plus
 ```
 
 This command completely removes the package from your system.

@@ -25,7 +25,7 @@ import type {
   IdeContext,
   ApprovalMode,
   IdeInfo,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type { DOMElement } from 'ink';
 import type { SessionStatsState } from '../contexts/SessionContext.js';
 import type { ExtensionUpdateState } from '../state/extensions.js';
@@ -35,6 +35,7 @@ import { type UseHistoryManagerReturn } from '../hooks/useHistoryManager.js';
 import { type RestartReason } from '../hooks/useIdeTrustListener.js';
 import { type CodingPlanUpdateRequest } from '../hooks/useCodingPlanUpdates.js';
 import { type ArenaDialogType } from '../hooks/useArenaCommand.js';
+import type { PartListUnion } from '@google/genai';
 
 export interface UIState {
   history: HistoryItem[];
@@ -95,7 +96,7 @@ export interface UIState {
   elapsedTime: number;
   currentLoadingPhrase: string;
   historyRemountKey: number;
-  messageQueue: string[];
+  messageQueue: PartListUnion[];
   showAutoAcceptIndicator: ApprovalMode;
   // Quota-related state
   currentModel: string;

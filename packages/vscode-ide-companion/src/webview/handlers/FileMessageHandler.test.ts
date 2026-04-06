@@ -56,7 +56,7 @@ const vscodeMock = vi.hoisted(() => {
 
 vi.mock('vscode', () => vscodeMock);
 vi.mock(
-  '@qwen-code/qwen-code-core/src/services/fileDiscoveryService.js',
+  '@boryslav-golubiev/qwen-code-plus-core/src/services/fileDiscoveryService.js',
   () => ({
     FileDiscoveryService: class {
       shouldIgnoreFile(filePath: string, options?: unknown) {
@@ -65,12 +65,12 @@ vi.mock(
     },
   }),
 );
-vi.mock('@qwen-code/qwen-code-core/src/utils/filesearch/fileSearch.js', () => ({
+vi.mock('@boryslav-golubiev/qwen-code-plus-core/src/utils/filesearch/fileSearch.js', () => ({
   FileSearchFactory: {
     create: () => fileSearchMock,
   },
 }));
-vi.mock('@qwen-code/qwen-code-core/src/utils/filesearch/crawlCache.js', () => ({
+vi.mock('@boryslav-golubiev/qwen-code-plus-core/src/utils/filesearch/crawlCache.js', () => ({
   clear: vi.fn(),
 }));
 

@@ -9,9 +9,9 @@ import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { Session } from './Session.js';
-import type { Config, GeminiChat } from '@qwen-code/qwen-code-core';
-import { ApprovalMode, AuthType } from '@qwen-code/qwen-code-core';
-import * as core from '@qwen-code/qwen-code-core';
+import type { Config, GeminiChat } from '@boryslav-golubiev/qwen-code-plus-core';
+import { ApprovalMode, AuthType } from '@boryslav-golubiev/qwen-code-plus-core';
+import * as core from '@boryslav-golubiev/qwen-code-plus-core';
 import type {
   AgentSideConnection,
   PromptRequest,

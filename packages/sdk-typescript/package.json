@@ -1,5 +1,5 @@
 {
-  "name": "@qwen-code/sdk",
+  "name": "@boryslav-golubiev/sdk",
   "version": "0.1.6",
   "description": "TypeScript SDK for programmatic access to qwen-code CLI",
   "main": "./dist/index.cjs",
@@ -28,7 +28,7 @@
     "lint": "eslint src test",
     "lint:fix": "eslint src test --fix",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
     "prepublishOnly": "npm run clean && npm run build && npm run bundle:cli",
     "prepack": "npm run build && npm run bundle:cli"
   },
@@ -65,11 +65,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/QwenLM/qwen-code.git",
+    "url": "https://github.com/boryslav-golubiev/qwen-code-plus.git",
     "directory": "packages/sdk-typescript"
   },
   "bugs": {
-    "url": "https://github.com/QwenLM/qwen-code/issues"
+    "url": "https://github.com/boryslav-golubiev/qwen-code-plus/issues"
   },
   "homepage": "https://qwenlm.github.io/qwen-code-docs/"
 }

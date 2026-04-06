@@ -24,9 +24,9 @@ import type { CompletionItem } from '../../types/completion.js';
 import type { ContextUsage } from './ContextIndicator.js';
 /**
  * Minimal follow-up state shape used by InputForm.
- * Defined locally to avoid pulling @qwen-code/qwen-code-core into the
+ * Defined locally to avoid pulling @boryslav-golubiev/qwen-code-plus-core into the
  * root entry's type declarations. The full FollowupState lives in
- * '@qwen-code/webui/followup'.
+ * '@boryslav-golubiev/webui/followup'.
  */
 interface InputFormFollowupState {
   /** Current suggestion text */

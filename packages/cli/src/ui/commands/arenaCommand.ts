@@ -31,7 +31,7 @@ import {
   type ArenaSessionErrorEvent,
   type ArenaSessionStartEvent,
   type ArenaSessionUpdateEvent,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   MessageType,
   type ArenaAgentCardData,

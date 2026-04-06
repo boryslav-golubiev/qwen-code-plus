@@ -9,8 +9,8 @@ import { waitFor, act } from '@testing-library/react';
 import type { InputPromptProps } from './InputPrompt.js';
 import { InputPrompt } from './InputPrompt.js';
 import type { TextBuffer } from './shared/text-buffer.js';
-import type { Config } from '@qwen-code/qwen-code-core';
-import { ApprovalMode } from '@qwen-code/qwen-code-core';
+import type { Config } from '@boryslav-golubiev/qwen-code-plus-core';
+import { ApprovalMode } from '@boryslav-golubiev/qwen-code-plus-core';
 import * as path from 'node:path';
 import type { CommandContext, SlashCommand } from '../commands/types.js';
 import { CommandKind } from '../commands/types.js';
@@ -1298,23 +1298,6 @@ describe('InputPrompt', () => {
 
       expect(props.vimHandleInput).toHaveBeenCalled();
       expect(mockBuffer.handleInput).toHaveBeenCalled();
-      unmount();
-    });
-
-    it('should toggle shortcuts when vim passes through ? on an empty prompt', async () => {
-      props.vimHandleInput = vi.fn().mockReturnValue(false);
-      props.onToggleShortcuts = vi.fn();
-
-      const { stdin, unmount } = renderWithProviders(
-        <InputPrompt {...props} />,
-      );
-      await wait();
-
-      stdin.write('?');
-      await wait();
-
-      expect(props.vimHandleInput).toHaveBeenCalled();
-      expect(props.onToggleShortcuts).toHaveBeenCalled();
       unmount();
     });
   });

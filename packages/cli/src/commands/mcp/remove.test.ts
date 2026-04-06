@@ -36,9 +36,9 @@ vi.mock('../../config/settings.js', async () => {
   };
 });
 
-vi.mock('@qwen-code/qwen-code-core', async (importOriginal) => {
+vi.mock('@boryslav-golubiev/qwen-code-plus-core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@qwen-code/qwen-code-core')>();
+    await importOriginal<typeof import('@boryslav-golubiev/qwen-code-plus-core')>();
   return {
     ...actual,
     MCPOAuthTokenStorage: vi.fn(() => ({

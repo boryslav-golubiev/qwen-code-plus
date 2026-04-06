@@ -5,7 +5,7 @@
  */
 
 import { Box } from 'ink';
-import { AuthType } from '@qwen-code/qwen-code-core';
+import { AuthType } from '@boryslav-golubiev/qwen-code-plus-core';
 import { Header, AuthDisplayType } from './Header.js';
 import { Tips } from './Tips.js';
 import { useSettings } from '../contexts/SettingsContext.js';

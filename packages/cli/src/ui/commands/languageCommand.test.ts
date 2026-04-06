@@ -58,9 +58,9 @@ vi.mock('node:fs', async (importOriginal) => {
 });
 
 // Mock Storage from core
-vi.mock('@qwen-code/qwen-code-core', async (importOriginal) => {
+vi.mock('@boryslav-golubiev/qwen-code-plus-core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@qwen-code/qwen-code-core')>();
+    await importOriginal<typeof import('@boryslav-golubiev/qwen-code-plus-core')>();
   return {
     ...actual,
     Storage: {
@@ -750,7 +750,7 @@ describe('languageCommand', () => {
       expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
-    it('should NOT overwrite existing file even when output language setting differs', () => {
+    it('should overwrite existing file when output language setting differs', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       vi.mocked(fs.readFileSync).mockReturnValue(
         `# Output language preference: English
@@ -760,8 +760,11 @@ describe('languageCommand', () => {
 
       initializeLlmOutputLanguage('Japanese');
 
-      // Should NOT overwrite - user's existing file takes precedence
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      expect(fs.writeFileSync).toHaveBeenCalledWith(
+        expect.stringContaining('output-language.md'),
+        expect.stringContaining('Japanese'),
+        'utf-8',
+      );
     });
 
     it('should resolve auto setting to detected system language', () => {

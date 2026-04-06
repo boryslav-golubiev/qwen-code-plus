@@ -5,10 +5,10 @@
  *
  * Prompt Suggestion Subpath Entry
  *
- * Separated from the root entry to avoid forcing all @qwen-code/webui
- * consumers to install @qwen-code/qwen-code-core as a dependency.
+ * Separated from the root entry to avoid forcing all @boryslav-golubiev/webui
+ * consumers to install @boryslav-golubiev/qwen-code-plus-core as a dependency.
  *
- * Usage: import { useFollowupSuggestions } from '@qwen-code/webui/followup';
+ * Usage: import { useFollowupSuggestions } from '@boryslav-golubiev/webui/followup';
  */
 
 export { useFollowupSuggestions } from './hooks/useFollowupSuggestions';

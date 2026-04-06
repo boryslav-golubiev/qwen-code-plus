@@ -22,8 +22,6 @@ export interface RetryInfo {
   maxRetries: number;
   /** Delay in milliseconds before the retry happens. */
   delayMs: number;
-  /** When called, resolves the delay promise early so the retry happens immediately. */
-  skipDelay: () => void;
 }
 
 /**

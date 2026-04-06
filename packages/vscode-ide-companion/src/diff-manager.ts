@@ -7,7 +7,7 @@
 import {
   IdeDiffAcceptedNotificationSchema,
   IdeDiffClosedNotificationSchema,
-} from '@qwen-code/qwen-code-core/src/ide/types.js';
+} from '@boryslav-golubiev/qwen-code-plus-core/src/ide/types.js';
 import { type JSONRPCNotification } from '@modelcontextprotocol/sdk/types.js';
 import * as path from 'node:path';
 import * as vscode from 'vscode';

@@ -10,7 +10,7 @@ import {
   getErrorMessage,
   logAuth,
   AuthEvent,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 
 /**
  * Handles the initial authentication flow.

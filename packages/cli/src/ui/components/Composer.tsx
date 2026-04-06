@@ -90,6 +90,7 @@ export const Composer = () => {
           inputWidth={uiState.inputWidth}
           suggestionsWidth={uiState.suggestionsWidth}
           onSubmit={uiActions.handleFinalSubmit}
+          onSubmitWithAttachments={uiActions.handleFinalSubmitWithAttachments}
           userMessages={uiState.userMessages}
           onClearScreen={uiActions.handleClearScreen}
           config={config}

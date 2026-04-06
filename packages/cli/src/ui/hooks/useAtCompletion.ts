@@ -5,8 +5,8 @@
  */
 
 import { useEffect, useReducer, useRef } from 'react';
-import type { Config, FileSearch } from '@qwen-code/qwen-code-core';
-import { FileSearchFactory, escapePath } from '@qwen-code/qwen-code-core';
+import type { Config, FileSearch } from '@boryslav-golubiev/qwen-code-plus-core';
+import { FileSearchFactory, escapePath } from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Suggestion } from '../components/SuggestionsDisplay.js';
 import { MAX_SUGGESTIONS_TO_SHOW } from '../components/SuggestionsDisplay.js';
 

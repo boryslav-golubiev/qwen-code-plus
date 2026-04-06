@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { SessionListItem } from '@qwen-code/qwen-code-core';
+import type { SessionListItem } from '@boryslav-golubiev/qwen-code-plus-core';
 
 /**
  * State for managing loaded sessions in the session picker.

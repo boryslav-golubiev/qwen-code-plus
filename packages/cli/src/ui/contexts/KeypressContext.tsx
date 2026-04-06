@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { Config } from '@qwen-code/qwen-code-core';
+import type { Config } from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   KittySequenceOverflowEvent,
   logKittySequenceOverflow,
   createDebugLogger,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { useStdin } from 'ink';
 import type React from 'react';
 import {
@@ -137,6 +137,9 @@ export function KeypressProvider({
 }) {
   const { stdin, setRawMode } = useStdin();
   const subscribers = useRef<Set<KeypressHandler>>(new Set()).current;
+  const isDraggingRef = useRef(false);
+  const dragBufferRef = useRef('');
+  const draggingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const subscribe = useCallback(
     (handler: KeypressHandler) => {
@@ -153,6 +156,13 @@ export function KeypressProvider({
   );
 
   useEffect(() => {
+    const clearDraggingTimer = () => {
+      if (draggingTimerRef.current) {
+        clearTimeout(draggingTimerRef.current);
+        draggingTimerRef.current = null;
+      }
+    };
+
     const wasRaw = stdin.isRaw;
     if (wasRaw === false) {
       setRawMode(true);
@@ -617,9 +627,26 @@ export function KeypressProvider({
         return;
       }
 
-      // Note: We no longer treat quotes specially for drag-and-drop detection.
-      // Modern terminals use bracketed paste mode (PASTE_MODE_PREFIX) for file drops,
-      // which is handled above. This prevents input lag on quote keystrokes.
+      if (
+        key.sequence === SINGLE_QUOTE ||
+        key.sequence === DOUBLE_QUOTE ||
+        isDraggingRef.current
+      ) {
+        isDraggingRef.current = true;
+        dragBufferRef.current += key.sequence;
+
+        clearDraggingTimer();
+        draggingTimerRef.current = setTimeout(() => {
+          isDraggingRef.current = false;
+          const seq = dragBufferRef.current;
+          dragBufferRef.current = '';
+          if (seq) {
+            broadcast({ ...key, name: '', paste: true, sequence: seq });
+          }
+        }, DRAG_COMPLETION_TIMEOUT_MS);
+
+        return;
+      }
 
       if (key.name === 'return' && waitingForEnterAfterBackslash) {
         if (backslashTimeout) {
@@ -1023,6 +1050,23 @@ export function KeypressProvider({
           sequence: pasteBuffer.toString(),
         });
         pasteBuffer = Buffer.alloc(0);
+      }
+
+      if (draggingTimerRef.current) {
+        clearTimeout(draggingTimerRef.current);
+        draggingTimerRef.current = null;
+      }
+      if (isDraggingRef.current && dragBufferRef.current) {
+        broadcast({
+          name: '',
+          ctrl: false,
+          meta: false,
+          shift: false,
+          paste: true,
+          sequence: dragBufferRef.current,
+        });
+        isDraggingRef.current = false;
+        dragBufferRef.current = '';
       }
     };
   }, [

@@ -24,18 +24,18 @@ import type {
   Status as ToolCallStatusType,
   AnyDeclarativeTool,
   AnyToolInvocation,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   DEFAULT_TRUNCATE_TOOL_OUTPUT_LINES,
   DEFAULT_TRUNCATE_TOOL_OUTPUT_THRESHOLD,
   ApprovalMode,
   MockTool,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { ToolCallStatus } from '../types.js';
 
 // Mocks
-vi.mock('@qwen-code/qwen-code-core', async () => {
-  const actual = await vi.importActual('@qwen-code/qwen-code-core');
+vi.mock('@boryslav-golubiev/qwen-code-plus-core', async () => {
+  const actual = await vi.importActual('@boryslav-golubiev/qwen-code-plus-core');
   return {
     ...actual,
     ToolRegistry: vi.fn(),

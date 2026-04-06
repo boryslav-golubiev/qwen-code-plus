@@ -15,11 +15,11 @@ import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   INITIAL_FOLLOWUP_STATE,
   createFollowupController,
-} from '@qwen-code/qwen-code-core';
-import type { FollowupState } from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
+import type { FollowupState } from '@boryslav-golubiev/qwen-code-plus-core';
 
 // Re-export types from core for convenience
-export type { FollowupState } from '@qwen-code/qwen-code-core';
+export type { FollowupState } from '@boryslav-golubiev/qwen-code-plus-core';
 
 /**
  * Options for the hook

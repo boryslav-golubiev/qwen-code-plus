@@ -457,7 +457,7 @@ install_qwen_code() {
 
     # Install Qwen Code
     log_info "Installing Qwen Code..."
-    if npm install -g @qwen-code/qwen-code@latest --registry https://registry.npmmirror.com; then
+    if npm install -g @boryslav-golubiev/qwen-code-plus@latest --registry https://registry.npmmirror.com; then
         log_success "Qwen Code installed successfully!"
 
         # Verify installation

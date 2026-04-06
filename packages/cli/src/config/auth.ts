@@ -9,7 +9,7 @@ import {
   type Config,
   type ModelProvidersConfig,
   type ProviderModelConfig,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { loadEnvironment, loadSettings, type Settings } from './settings.js';
 import { t } from '../i18n/index.js';
 

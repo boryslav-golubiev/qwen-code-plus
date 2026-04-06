@@ -9,7 +9,6 @@ import type {
   Config,
   EditorType,
   GeminiClient,
-  RetryInfo,
   ServerGeminiChatCompressedEvent,
   ServerGeminiContentEvent as ContentEvent,
   ServerGeminiFinishedEvent,
@@ -17,7 +16,7 @@ import type {
   ThoughtSummary,
   ToolCallRequestInfo,
   GeminiErrorEventValue,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import {
   GeminiEventType as ServerGeminiEventType,
   SendMessageType,
@@ -41,7 +40,7 @@ import {
   ApiCancelEvent,
   isSupportedImageMimeType,
   getUnsupportedImageFormatWarning,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import { type Part, type PartListUnion, FinishReason } from '@google/genai';
 import type {
   HistoryItem,
@@ -273,7 +272,6 @@ export const useGeminiStream = (
    */
   const clearRetryCountdown = useCallback(() => {
     stopRetryCountdownTimer();
-    skipRetryDelayRef.current = null;
     setPendingRetryErrorItem(null);
     setPendingRetryCountdownItem(null);
   }, [
@@ -282,14 +280,14 @@ export const useGeminiStream = (
     stopRetryCountdownTimer,
   ]);
 
-  // Holds the skipDelay callback from the current rate-limit RetryInfo.
-  // Managed symmetrically: set in startRetryCountdown, cleared in clearRetryCountdown.
-  const skipRetryDelayRef = useRef<(() => void) | null>(null);
-
   const startRetryCountdown = useCallback(
-    (retryInfo: RetryInfo) => {
+    (retryInfo: {
+      message?: string;
+      attempt: number;
+      maxRetries: number;
+      delayMs: number;
+    }) => {
       stopRetryCountdownTimer();
-      skipRetryDelayRef.current = retryInfo.skipDelay;
       const startTime = Date.now();
       const { message, attempt, maxRetries, delayMs } = retryInfo;
       const retryReasonText =
@@ -1393,15 +1391,6 @@ export const useGeminiStream = (
    * when the user presses Ctrl+Y (bound to Command.RETRY_LAST in keyBindings.ts).
    */
   const retryLastPrompt = useCallback(async () => {
-    // During a rate-limit retry countdown, skip the delay so the generator
-    // retries immediately — no abort/re-submit needed.
-    if (skipRetryDelayRef.current) {
-      skipRetryDelayRef.current();
-      skipRetryDelayRef.current = null;
-      clearRetryCountdown();
-      return;
-    }
-
     if (
       streamingState === StreamingState.Responding ||
       streamingState === StreamingState.WaitingForConfirmation

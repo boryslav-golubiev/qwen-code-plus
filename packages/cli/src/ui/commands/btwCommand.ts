@@ -13,7 +13,7 @@ import { CommandKind } from './types.js';
 import { MessageType } from '../types.js';
 import type { HistoryItemBtw } from '../types.js';
 import { t } from '../../i18n/index.js';
-import type { GeminiClient } from '@qwen-code/qwen-code-core';
+import type { GeminiClient } from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Content } from '@google/genai';
 
 function makeBtwPromptId(sessionId: string): string {

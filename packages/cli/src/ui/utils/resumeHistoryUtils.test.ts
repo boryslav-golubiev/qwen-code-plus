@@ -12,7 +12,7 @@ import type {
   Config,
   ConversationRecord,
   ResumedSessionData,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 import type { Part } from '@google/genai';
 
 const makeConfig = (tools: Record<string, AnyDeclarativeTool>) =>

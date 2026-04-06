@@ -231,8 +231,8 @@ export { StopIcon } from './components/icons/StopIcon';
 // Hooks
 export { useTheme } from './hooks/useTheme';
 export { useLocalStorage } from './hooks/useLocalStorage';
-// NOTE: useFollowupSuggestions is exported from '@qwen-code/webui/followup'
-// subpath to avoid forcing all consumers to install @qwen-code/qwen-code-core.
+// NOTE: useFollowupSuggestions is exported from '@boryslav-golubiev/webui/followup'
+// subpath to avoid forcing all consumers to install @boryslav-golubiev/qwen-code-plus-core.
 
 // Types
 export type { Theme } from './types/theme';

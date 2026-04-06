@@ -261,10 +261,6 @@ export class MCPOAuthProvider {
               </html>
             `);
               activeCallbackServer = null;
-              if (activeCallbackTimeout) {
-                clearTimeout(activeCallbackTimeout);
-                activeCallbackTimeout = null;
-              }
               server.close();
               reject(new Error(`OAuth error: ${error}`));
               return;
@@ -280,10 +276,6 @@ export class MCPOAuthProvider {
               res.writeHead(400);
               res.end('Invalid state parameter');
               activeCallbackServer = null;
-              if (activeCallbackTimeout) {
-                clearTimeout(activeCallbackTimeout);
-                activeCallbackTimeout = null;
-              }
               server.close();
               reject(new Error('State mismatch - possible CSRF attack'));
               return;
@@ -302,18 +294,10 @@ export class MCPOAuthProvider {
           `);
 
             activeCallbackServer = null;
-            if (activeCallbackTimeout) {
-              clearTimeout(activeCallbackTimeout);
-              activeCallbackTimeout = null;
-            }
             server.close();
             resolve({ code, state });
           } catch (error) {
             activeCallbackServer = null;
-            if (activeCallbackTimeout) {
-              clearTimeout(activeCallbackTimeout);
-              activeCallbackTimeout = null;
-            }
             server.close();
             reject(error);
           }

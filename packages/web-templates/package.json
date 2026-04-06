@@ -1,10 +1,10 @@
 {
-  "name": "@qwen-code/web-templates",
+  "name": "@boryslav-golubiev/web-templates",
   "version": "0.14.1",
   "description": "Web templates bundled as embeddable JS/CSS strings",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QwenLM/qwen-code.git"
+    "url": "git+https://github.com/boryslav-golubiev/qwen-code-plus.git"
   },
   "type": "module",
   "main": "dist/index.js",

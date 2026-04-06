@@ -12,7 +12,7 @@ import {
   ShellExecutionService,
   flatMapTextParts,
   checkArgumentSafety,
-} from '@qwen-code/qwen-code-core';
+} from '@boryslav-golubiev/qwen-code-plus-core';
 
 import type { CommandContext } from '../../ui/commands/types.js';
 import type { IPromptProcessor, PromptPipelineContent } from './types.js';

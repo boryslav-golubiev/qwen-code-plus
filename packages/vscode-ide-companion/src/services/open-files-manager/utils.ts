@@ -5,7 +5,7 @@
  */
 
 import * as vscode from 'vscode';
-import type { File } from '@qwen-code/qwen-code-core/src/ide/types.js';
+import type { File } from '@boryslav-golubiev/qwen-code-plus-core/src/ide/types.js';
 
 export function isFileUri(uri: vscode.Uri): boolean {
   return uri.scheme === 'file';

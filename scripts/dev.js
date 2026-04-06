@@ -71,7 +71,7 @@ import { pathToFileURL } from 'node:url';
 const coreSourceUrl = '${coreSourceUrl}';
 
 export function resolve(specifier, context, nextResolve) {
-  if (specifier === '@qwen-code/qwen-code-core') {
+  if (specifier === '@boryslav-golubiev/qwen-code-plus-core') {
     return {
       shortCircuit: true,
       url: coreSourceUrl,
