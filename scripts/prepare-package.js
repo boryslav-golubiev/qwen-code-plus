@@ -62,6 +62,17 @@ for (const file of filesToCopy) {
   }
 }
 
+// Copy postinstall script for ripgrep permissions
+console.log('Copying postinstall script...');
+const postinstallSource = path.join(rootDir, 'scripts', 'dist-postinstall.js');
+const postinstallDest = path.join(distDir, 'postinstall.js');
+if (fs.existsSync(postinstallSource)) {
+  fs.copyFileSync(postinstallSource, postinstallDest);
+  console.log('Copied postinstall.js');
+} else {
+  console.warn('Warning: postinstall script not found');
+}
+
 // Copy locales folder
 console.log('Copying locales folder...');
 const localesSourceDir = path.join(
@@ -165,9 +176,13 @@ const distPackageJson = {
     'LICENSE',
     'locales',
     'bundled',
+    'postinstall.js',
   ],
   config: rootPackageJson.config,
   dependencies: {},
+  scripts: {
+    postinstall: 'node postinstall.js',
+  },
   optionalDependencies: {
     '@lydell/node-pty': '1.2.0-beta.10',
     '@lydell/node-pty-darwin-arm64': '1.2.0-beta.10',
