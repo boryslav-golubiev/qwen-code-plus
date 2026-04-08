@@ -101,10 +101,14 @@ export function getCustomSystemPrompt(
     instructionText = customInstruction.text || '';
   }
 
-  // Append user memory using the same pattern as getCoreSystemPrompt
-  const memorySuffix = buildSystemPromptSuffix(userMemory);
+  // Prepend user memory before custom instruction for better compliance
+  // QWEN.md/AGENTS.md contain project-specific instructions that should take precedence
+  const memoryPrefix =
+    userMemory && userMemory.trim().length > 0
+      ? `${userMemory.trim()}\n\n---\n\n`
+      : '';
 
-  return `${instructionText}${memorySuffix}${buildSystemPromptSuffix(appendInstruction)}`;
+  return `${memoryPrefix}${instructionText}${buildSystemPromptSuffix(appendInstruction)}`;
 }
 
 function buildSystemPromptSuffix(text?: string): string {
@@ -341,13 +345,18 @@ Your core function is efficient and safe assistance. Balance extreme conciseness
     fs.writeFileSync(writePath, basePrompt);
   }
 
-  const memorySuffix =
-    userMemory && userMemory.trim().length > 0
-      ? buildSystemPromptSuffix(userMemory)
-      : '';
+  // Build suffix for append instructions
   const appendSuffix = buildSystemPromptSuffix(appendInstruction);
 
-  return `${basePrompt}${memorySuffix}${appendSuffix}`;
+  // Prepend user memory before base prompt for better compliance
+  // QWEN.md/AGENTS.md contain project-specific instructions that should take precedence
+  // over the generic base prompt. Placing them first ensures the model prioritizes them.
+  const memoryPrefix =
+    userMemory && userMemory.trim().length > 0
+      ? `${userMemory.trim()}\n\n---\n\n`
+      : '';
+
+  return `${memoryPrefix}${basePrompt}${appendSuffix}`;
 }
 
 /**

@@ -69,13 +69,13 @@ describe('Core System Prompt (prompts.ts)', () => {
     expect(prompt).toMatchSnapshot();
   });
 
-  it('should append userMemory with separator when provided', () => {
+  it('should prepend userMemory with separator when provided', () => {
     vi.stubEnv('SANDBOX', undefined);
     const memory = 'This is custom user memory.\nBe extra polite.';
-    const expectedSuffix = `\n\n---\n\n${memory}`;
+    const expectedPrefix = `${memory}\n\n---\n\n`;
     const prompt = getCoreSystemPrompt(memory);
 
-    expect(prompt.endsWith(expectedSuffix)).toBe(true);
+    expect(prompt.startsWith(expectedPrefix)).toBe(true);
     expect(prompt).toContain('You are Qwen Code, an interactive CLI agent'); // Ensure base prompt follows
     expect(prompt).toMatchSnapshot(); // Snapshot the combined prompt
   });
@@ -86,14 +86,17 @@ describe('Core System Prompt (prompts.ts)', () => {
     const appendInstruction = 'Always answer in exactly one sentence.';
     const prompt = getCoreSystemPrompt(memory, undefined, appendInstruction);
 
-    expect(prompt).toContain(`\n\n---\n\n${memory}`);
+    // Memory should be prepended (appears before base prompt)
+    expect(prompt.startsWith(memory)).toBe(true);
+    expect(prompt).toContain(`\n\n---\n\n`);
+    // Append instruction should appear after base prompt
     expect(prompt).toContain(`\n\n---\n\n${appendInstruction}`);
-    expect(prompt.indexOf(memory)).toBeLessThan(
-      prompt.indexOf(appendInstruction),
+    expect(prompt.indexOf(appendInstruction)).toBeGreaterThan(
+      prompt.indexOf('You are Qwen Code'),
     );
   });
 
-  it('should append extra instructions after a custom system prompt and user memory', () => {
+  it('should prepend user memory before a custom system prompt and append extra instructions', () => {
     const customInstruction = 'You are a release manager.';
     const userMemory = 'The repo uses pnpm.';
     const appendInstruction = 'Only report blocking issues.';
@@ -105,7 +108,7 @@ describe('Core System Prompt (prompts.ts)', () => {
     );
 
     expect(result).toBe(
-      [customInstruction, userMemory, appendInstruction].join('\n\n---\n\n'),
+      [userMemory, customInstruction, appendInstruction].join('\n\n---\n\n'),
     );
   });
 
@@ -430,7 +433,7 @@ describe('getCustomSystemPrompt', () => {
     const result = getCustomSystemPrompt(customInstruction, userMemory);
 
     expect(result).toBe(
-      'You are a helpful assistant specialized in code review.\n\n---\n\nRemember to be extra thorough.\nFocus on security issues.',
+      'Remember to be extra thorough.\nFocus on security issues.\n\n---\n\nYou are a helpful assistant specialized in code review.',
     );
     expect(result).toContain('---');
   });
@@ -446,7 +449,7 @@ describe('getCustomSystemPrompt', () => {
     const result = getCustomSystemPrompt(customInstruction, userMemory);
 
     expect(result).toBe(
-      'You are a code assistant. Always provide examples.\n\n---\n\nUser prefers TypeScript examples.',
+      'User prefers TypeScript examples.\n\n---\n\nYou are a code assistant. Always provide examples.',
     );
     expect(result).toContain('---');
   });
