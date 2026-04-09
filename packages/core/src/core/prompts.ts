@@ -129,7 +129,12 @@ export function getCoreSystemPrompt(
   // Resolve the environment variable to get either a path or a switch value.
   const systemMdResolution = resolvePathFromEnv(process.env['QWEN_SYSTEM_MD']);
 
-  // Proceed only if the environment variable is set and is not disabled.
+  // Auto-enable if system.md exists at default path and env var is not explicitly disabled
+  if (!systemMdResolution.isDisabled && fs.existsSync(systemMdPath)) {
+    systemMdEnabled = true;
+  }
+
+  // Proceed if environment variable is set and not disabled.
   if (systemMdResolution.value && !systemMdResolution.isDisabled) {
     systemMdEnabled = true;
 
