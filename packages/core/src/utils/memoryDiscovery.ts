@@ -282,7 +282,7 @@ async function readGeminiMdFiles(
 function concatenateInstructions(
   instructionContents: GeminiFileContent[],
   // CWD is needed to resolve relative paths for display markers
-  currentWorkingDirectoryForDisplay: string,
+  _currentWorkingDirectoryForDisplay: string,
 ): string {
   return instructionContents
     .filter((item) => typeof item.content === 'string')
@@ -291,10 +291,8 @@ function concatenateInstructions(
       if (trimmedContent.length === 0) {
         return null;
       }
-      const displayPath = path.isAbsolute(item.filePath)
-        ? path.relative(currentWorkingDirectoryForDisplay, item.filePath)
-        : item.filePath;
-      return `--- Context from: ${displayPath} ---\n${trimmedContent}\n--- End of Context from: ${displayPath} ---`;
+      // Return raw content without markers — the model treats it as direct instructions
+      return trimmedContent;
     })
     .filter((block): block is string => block !== null)
     .join('\n\n');

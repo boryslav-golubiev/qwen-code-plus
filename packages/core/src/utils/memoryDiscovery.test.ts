@@ -114,7 +114,7 @@ describe('loadServerHierarchicalMemory', () => {
       );
 
       expect(fileCount).toEqual(1);
-      expect(memoryContent).toContain(path.relative(cwd, filepath).toString());
+      expect(memoryContent).toContain('default context content');
     });
   });
 
@@ -134,7 +134,7 @@ describe('loadServerHierarchicalMemory', () => {
   });
 
   it('should load only the global context file if present and others are not (default filename)', async () => {
-    const defaultContextFile = await createTestFile(
+    await createTestFile(
       path.join(homedir, QWEN_DIR, DEFAULT_CONTEXT_FILENAME),
       'default context content',
     );
@@ -148,7 +148,7 @@ describe('loadServerHierarchicalMemory', () => {
     );
 
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, defaultContextFile)} ---\ndefault context content\n--- End of Context from: ${path.relative(cwd, defaultContextFile)} ---`,
+      memoryContent: 'default context content',
       fileCount: 1,
     });
   });
@@ -157,7 +157,7 @@ describe('loadServerHierarchicalMemory', () => {
     const customFilename = 'CUSTOM_AGENTS.md';
     setGeminiMdFilename(customFilename);
 
-    const customContextFile = await createTestFile(
+    await createTestFile(
       path.join(homedir, QWEN_DIR, customFilename),
       'custom context content',
     );
@@ -171,7 +171,7 @@ describe('loadServerHierarchicalMemory', () => {
     );
 
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, customContextFile)} ---\ncustom context content\n--- End of Context from: ${path.relative(cwd, customContextFile)} ---`,
+      memoryContent: 'custom context content',
       fileCount: 1,
     });
   });
@@ -180,14 +180,11 @@ describe('loadServerHierarchicalMemory', () => {
     const customFilename = 'PROJECT_CONTEXT.md';
     setGeminiMdFilename(customFilename);
 
-    const projectContextFile = await createTestFile(
+    await createTestFile(
       path.join(projectRoot, customFilename),
       'project context content',
     );
-    const cwdContextFile = await createTestFile(
-      path.join(cwd, customFilename),
-      'cwd context content',
-    );
+    await createTestFile(path.join(cwd, customFilename), 'cwd context content');
 
     const result = await loadServerHierarchicalMemory(
       cwd,
@@ -198,7 +195,7 @@ describe('loadServerHierarchicalMemory', () => {
     );
 
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, projectContextFile)} ---\nproject context content\n--- End of Context from: ${path.relative(cwd, projectContextFile)} ---\n\n--- Context from: ${path.relative(cwd, cwdContextFile)} ---\ncwd context content\n--- End of Context from: ${path.relative(cwd, cwdContextFile)} ---`,
+      memoryContent: 'project context content\n\ncwd context content',
       fileCount: 2,
     });
   });
@@ -223,17 +220,17 @@ describe('loadServerHierarchicalMemory', () => {
 
     // Only upward traversal is performed, subdirectory files are not loaded
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${customFilename} ---\nCWD custom memory\n--- End of Context from: ${customFilename} ---`,
+      memoryContent: 'CWD custom memory',
       fileCount: 1,
     });
   });
 
   it('should load ORIGINAL_GEMINI_MD_FILENAME files by upward traversal from CWD to project root', async () => {
-    const projectRootGeminiFile = await createTestFile(
+    await createTestFile(
       path.join(projectRoot, DEFAULT_CONTEXT_FILENAME),
       'Project root memory',
     );
-    const srcGeminiFile = await createTestFile(
+    await createTestFile(
       path.join(cwd, DEFAULT_CONTEXT_FILENAME),
       'Src directory memory',
     );
@@ -247,7 +244,7 @@ describe('loadServerHierarchicalMemory', () => {
     );
 
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, projectRootGeminiFile)} ---\nProject root memory\n--- End of Context from: ${path.relative(cwd, projectRootGeminiFile)} ---\n\n--- Context from: ${path.relative(cwd, srcGeminiFile)} ---\nSrc directory memory\n--- End of Context from: ${path.relative(cwd, srcGeminiFile)} ---`,
+      memoryContent: 'Project root memory\n\nSrc directory memory',
       fileCount: 2,
     });
   });
@@ -272,25 +269,25 @@ describe('loadServerHierarchicalMemory', () => {
 
     // Subdirectory files are not loaded, only CWD and upward
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${DEFAULT_CONTEXT_FILENAME} ---\nCWD memory\n--- End of Context from: ${DEFAULT_CONTEXT_FILENAME} ---`,
+      memoryContent: 'CWD memory',
       fileCount: 1,
     });
   });
 
   it('should load and correctly order global and upward context files', async () => {
-    const defaultContextFile = await createTestFile(
+    await createTestFile(
       path.join(homedir, QWEN_DIR, DEFAULT_CONTEXT_FILENAME),
       'default context content',
     );
-    const rootGeminiFile = await createTestFile(
+    await createTestFile(
       path.join(testRootDir, DEFAULT_CONTEXT_FILENAME),
       'Project parent memory',
     );
-    const projectRootGeminiFile = await createTestFile(
+    await createTestFile(
       path.join(projectRoot, DEFAULT_CONTEXT_FILENAME),
       'Project root memory',
     );
-    const cwdGeminiFile = await createTestFile(
+    await createTestFile(
       path.join(cwd, DEFAULT_CONTEXT_FILENAME),
       'CWD memory',
     );
@@ -309,7 +306,8 @@ describe('loadServerHierarchicalMemory', () => {
 
     // Subdirectory files are not loaded, only global and upward from CWD
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, defaultContextFile)} ---\ndefault context content\n--- End of Context from: ${path.relative(cwd, defaultContextFile)} ---\n\n--- Context from: ${path.relative(cwd, rootGeminiFile)} ---\nProject parent memory\n--- End of Context from: ${path.relative(cwd, rootGeminiFile)} ---\n\n--- Context from: ${path.relative(cwd, projectRootGeminiFile)} ---\nProject root memory\n--- End of Context from: ${path.relative(cwd, projectRootGeminiFile)} ---\n\n--- Context from: ${path.relative(cwd, cwdGeminiFile)} ---\nCWD memory\n--- End of Context from: ${path.relative(cwd, cwdGeminiFile)} ---`,
+      memoryContent:
+        'default context content\n\nProject parent memory\n\nProject root memory\n\nCWD memory',
       fileCount: 4,
     });
   });
@@ -329,7 +327,7 @@ describe('loadServerHierarchicalMemory', () => {
     );
 
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, extensionFilePath)} ---\nExtension memory content\n--- End of Context from: ${path.relative(cwd, extensionFilePath)} ---`,
+      memoryContent: 'Extension memory content',
       fileCount: 1,
     });
   });
@@ -338,7 +336,7 @@ describe('loadServerHierarchicalMemory', () => {
     const includedDir = await createEmptyDir(
       path.join(testRootDir, 'included'),
     );
-    const includedFile = await createTestFile(
+    await createTestFile(
       path.join(includedDir, DEFAULT_CONTEXT_FILENAME),
       'included directory memory',
     );
@@ -352,7 +350,7 @@ describe('loadServerHierarchicalMemory', () => {
     );
 
     expect(result).toEqual({
-      memoryContent: `--- Context from: ${path.relative(cwd, includedFile)} ---\nincluded directory memory\n--- End of Context from: ${path.relative(cwd, includedFile)} ---`,
+      memoryContent: 'included directory memory',
       fileCount: 1,
     });
   });
